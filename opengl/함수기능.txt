@@ -1,0 +1,114 @@
+
+====draw_center===
+glBegin : 도형 그리기 시작
+glEnd : 도형 그리기 끝. 도형을 다 정의함
+
+glColor3f : 세가지 색상 요소의 강도를 실수로 지정함
+
+glVertex3f : glBeing / glEnd 쌍 내에서 점, 선 및 다각형 꼭짓점을 지정하는 데 사용됨.
+현재 색, 법선 및 질감 좌표는 glVertex가 호출될 때 꼭짓점과 연결됨.
+
+glRasterPos3f : 창 좌표에서 3차원 위치를 유지한다. '래스터 위치(픽셀을 기반으로 함)' 이다.
+
+glutBitmapCharacter : 비트맵 폰트. 2d 폰트를 의미한다. 3d상에서 이를 표현하나, 굵기가 없고 회전 및 크기변환을 할 수 없다. 이 함수들이 x, y, z를 그린다.
+
+
+====idle===
+glutGet : 정수로 표시되는 단순한 GLUT state를 표시한다.
+GLUT_ELAPSED_TIME : 위 함수의 인자. glutinit이 호출된 순간부터의 milisecond 단위의 숫자를 반환한다. 또는 glutGet(GLUT_ELAPSED_TIME
+
+glutPostRedisplay : 현재의 윈도우를 재생하도록 요구함. 예로 이전 윈도우에 그려진 내용이 프로그램에 의해 변경된다면, 이를 새로 가져오기 위해 쓰임
+
+
+====close===
+glDeleteTextures : 명명된 텍스쳐를 삭제함.
+
+glutLeaveMainLoop : freeglut라이브러리의 함수. 이 함수를 통해 종료 후 후처리 가능함
+
+CloseHandle(n) : 닫고자 하는 열린 쓰레드 핸들인 n을 닫는다.
+
+
+
+====add_quats===
+vcopy, vscale등 코드 내부에 있는 v~ 함수 : 인자로 받은 값에 맞는 동작을 한다. 인자는 보통 v[0], v[1], v[2]로 표시되는걸로 보아 3차원 벡터로 생각된다
+
+
+
+====reshape===
+glViewport : viewport를 설정한다.
+(0, 0, width, height); 이면 정방향이다.
+
+glMatrixMode(GL_MODELVIEW); :
+특정 좌표 0,0,0에 도형을 그린다면 GL_MODELVIEW 매트릭스를 곱해서 실제적 위치 지정
+
+glMatrixMode(GL_PROJECTION); :
+위의 GL_MODELVIEW에서 그려진 도형에 대한 실제 위치라고 하면
+GL_PROJECTION에 있는 매트릭스를 곱해 최종적으로 어떻게 화면에 뿌릴까에 대한 부분
+
+glLoadIdentity();  :
+해당 행렬을 항등행렬로 만듦
+
+gluPerspective(58, (double)width / height, 0.1, 100);
+: 원근 투영을 나타내는 함수. 시야각 fovy:58과 종횡비 aspect:width/height를 사용해 원근 투영 행렬을 만든다. 0.1, 100은 각각 near, far으로 near, far 클립핑 평면의 거리이다.
+
+
+====motion=====
+trackball : 3차원 공간 탐색을 위한 트랙볼 설정
+
+
+====mouse=====
+GLUT_DOWN 마우스 누르고 있음
+GLUT_LEFT_BUTTON 왼
+GLUT_RIGHT_BUTTON 오른쪽
+GLUT_MIDDLE_BUTTON 가운데
+
+====trackball=====
+
+====normalize_quat====
+
+====build_rotmatrix====
+
+====InitializeWindow====
+glutInit : glut 라이브러리를 초기화하고 기반플랫폼의 윈도우 시스템과 연결함
+
+glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH);
+: 디스플레이 표면의 주요 특징들을 결정함
+트루컬러모드, 더블버퍼 사용, 색상에 알파값 사용, 깊이버퍼를 사용한 모습
+
+glutInitWindowSize : 3d모델을 표현할 윈도우의 폭width과 높이height를 결정함
+glutInitWindowPosition : 윈도우의 x,y 시작좌표를 결정함
+
+glutCreateWindow : 윈도우는 상단에 제목을 가지는데, 이를 문자열 인수로 지정함. 윈도우를 지칭하는 유일한 id가 return됨
+
+glutIdleFunc(idle); app의 휴면idel 시간에 호출될 함수를 직접 만든 idle로 지정
+glutDisplayFunc(display); display() 함수가 콜백 형식으로 지정됨. 매개변수로 전달된 함수가 디스플레이 이벤트때마다 호출된다. 별 일 없으면 이 이벤트는 계속 발생함.
+glutReshapeFunc(reshape); 사용자가 창 위치 변경, 크기 변경 등의 행위 시 동적으로 반응하는 콜백함수reshape()를 지정해 리셰이프 이벤트를 등록함.
+리셰이프 이벤트 발생시 glut는 변경된 윈도우 폭과 높이를 콜백함수에게 넘겨줌
+glutSpecialFunc(special); :  F1~F12 / 화살표 / PgUp / PgDn / Home / End / Insert 에 대한 입력을 받음
+glutMotionFunc(motion); 마우스 콜백. 마우스 버튼을 누를때 또는 움직일때 발생한다.
+glutMouseFunc(mouse); 마우스 콜백. 마우스 클릭 처리를 위한 콜백 함수
+glutCloseFunc(close); : 윈도우 종료에 대한 콜백으로 생각됨
+
+glutSetOption : glutLeaveMainLoop()를 통한 종료 후 후처리 기능을 사용하기 위해 메인루프 실행 전에 하는 glut 설정
+
+glClearColor : 설정한 색상으로 화면을 지움
+glEnable(GL_DEPTH_TEST); 주어진 옵션을 활성화함. 여기서는 깊이 테스트를 설정
+
+
+=====display====
+glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+ : 버퍼들을 미리 설정된 값으로 지운다. 컬러 쓰기와 깊이 버퍼를 지우도록 설정됨
+
+glLoadIdentity();
+공간상에 두번째 물체를 그릴때 첫번째 물체의 변환행렬이 남아있는 것을 초기화하기 위함
+gluPerspective 원근투영 나타냄
+glTranslatef 정점의 이동을 해줌.
+glScalef 정점간 거리, 즉 벡터의 길이를 늘리고 줄여줌.
+glRotatef 지정된 angle만큼 한 축을 기준으로 회전함
+glMultMatrixf 현재 행렬에 임의의 행렬을 곱함
+glPointSize 래스터화 된 점의 지름을 정함
+glutSwapBuffers 백버퍼와 전면버퍼를 통째로 교체한다. 백 버퍼에 미리 준비해둔 그림이 바로 나타나게 된다 이 버퍼 교체작업 자체가 출력이다
+
+
+===main===
+glutMainLoop 이벤트 처리 루프이다. 이 루프 안에서 이벤트가 발생하면 일치하는 콜백함수가 등록된 경우, 등록된 함수가 호출된다
